@@ -29,54 +29,13 @@ export class MoviePostersResource extends EventTarget {
   static ITEMS_PER_PAGE = 10; // imperative value;
   private cache: MoviePostersCache;
 
-  private query: string = '';
-  private page: number = 0;
-  private pageCount: number = 0;
-  private shouldUpdate = false;
-
   constructor(cache: MoviePostersCache) {
     super();
     this.cache = cache;
   }
 
-  public getQuery() {
-    return this.query;
-  }
-
-  public getPage() {
-    return this.page;
-  }
-
-  public getPageCount() {
-    return this.pageCount;
-  }
-
-  public setQuery(query: string) {
-    this.query = query;
-    this.scheduleUpdate();
-  }
-
-  public setPage(page: number) {
-    this.page = page;
-    this.scheduleUpdate();
-  }
-
-  public setPageCount(pageCount: number) {
-    this.pageCount = pageCount;
-    this.scheduleUpdate();
-  }
-
-  private scheduleUpdate() {
-    this.shouldUpdate = true;
-    queueMicrotask(() => {
-      if (this.shouldUpdate) {
-        this.dispatchEvent(new Event('update'))
-        this.shouldUpdate = false;
-      }
-    })
-  }
-
   async fetchPostersForPage(query: string, page: number) : Promise<Pagination> {
+    console.log('fetching posters')
     const key =
       this.cache.findKey(query, page)
       || this.cache.createKey(query, page);

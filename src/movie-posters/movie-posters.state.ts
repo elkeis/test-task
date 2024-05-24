@@ -1,6 +1,6 @@
 import { Movie } from "./movie-posters.resource";
 
-interface IMoviePostersState {
+export interface IMoviePostersState {
   query: string;
   pagesCount: number;
   currentPage: number;
@@ -9,8 +9,9 @@ interface IMoviePostersState {
 }
 
 export class MoviePostersState extends EventTarget implements IMoviePostersState {
+  public static instance =  new MoviePostersState();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private updateSet: Partial<MoviePostersState> = {};
+  private updateSet: Partial<IMoviePostersState> = {};
 
   query: string = '';
   pagesCount: number = 0;
@@ -18,8 +19,8 @@ export class MoviePostersState extends EventTarget implements IMoviePostersState
   isLoading: boolean = false;
   data: Array<Movie> = [];
 
-  proxy = new Proxy(this, {
-    set(target: MoviePostersState, prop: keyof MoviePostersState, newValue) {
+  watchable = new Proxy(this, {
+    set(target: MoviePostersState, prop: keyof IMoviePostersState, newValue) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       target.scheduleUpdate(prop, newValue);
       return true;
@@ -27,7 +28,7 @@ export class MoviePostersState extends EventTarget implements IMoviePostersState
   });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private scheduleUpdate(prop: keyof MoviePostersState, value: any) {
+  private scheduleUpdate(prop: keyof IMoviePostersState, value: any) {
     this.updateSet[prop] = value;
     queueMicrotask(() => {
       if (Object.keys(this.updateSet).length > 0) {

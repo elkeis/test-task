@@ -1,33 +1,52 @@
-import React, { ConsumerProps, createContext, useCallback, useMemo, useState } from "react";
+import React, { ConsumerProps, createContext, useEffect, useState } from "react";
+import { IMoviePostersState, MoviePostersState } from "./movie-posters.state";
+import { MoviePostersStateManager } from "./movie-posters.state-manager";
+import { MoviePostersResource } from "./movie-posters.resource";
+import { MoviePostersCache } from "./movie-posters.cache";
 
-interface MoviePosters {
-  isAnyCharacteristic: boolean,
-  anyApi: () => void,
+interface Context {
+  state: IMoviePostersState
 }
 
-export const MoviePosters = createContext<MoviePosters>({
-  movies
-  anyApi: () => { throw new Error('Method is not implemented!') }
+export const MoviePosters = createContext<Context>({
+  state: {
+    currentPage: 0,
+    data: [],
+    isLoading: false,
+    pagesCount: 0,
+    query: '',
+  }
 });
 
 
-export const MoviePostersProvider: React.FC<ConsumerProps<MoviePosters>> = ({
+export const MoviePostersProvider: React.FC<ConsumerProps<Context>> = ({
   children,
 }) => {
-  const [isAnyCharacteristic, setisAnyCharacteristic] = useState(false);
-  const anyApi = useCallback(() => {
-    setisAnyCharacteristic(true);
-    setTimeout(() => setisAnyCharacteristic(false), 2000);
-  }, []);
+  const [state, setState] = useState({
+    state: MoviePostersState.instance.watchable
+  });
 
-  const api = useMemo<MoviePosters>(() => {
-    return {
-      anyApi,
-      isAnyCharacteristic,
+  useEffect(() => {
+    const handler = () => {
+      setState({
+        state: MoviePostersState.instance.watchable
+      })
+    };
+
+    MoviePostersState.instance.addEventListener('update', handler);
+    const manager = new MoviePostersStateManager(
+      new MoviePostersResource(
+        new MoviePostersCache()
+      ),
+      MoviePostersState.instance
+    );
+    return () => {
+      MoviePostersState.instance.removeEventListener('update', handler);
+      manager.destroy();
     }
-  }, [isAnyCharacteristic]);
+  }, [])
 
-  return <MoviePosters.Provider value={api}>
+  return <MoviePosters.Provider value={state}>
     <MoviePosters.Consumer children={children} />
   </MoviePosters.Provider>
 }
