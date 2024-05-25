@@ -15,6 +15,7 @@ export const MoviePosters = createContext<Context>({
     isLoading: false,
     pagesCount: 0,
     query: '',
+    totalResults: 0,
   }
 });
 

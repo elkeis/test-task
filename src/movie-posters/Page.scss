@@ -1,0 +1,168 @@
+.MoviePostersPage {
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+
+  >.header {
+    padding: 1em;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 1em;
+
+    background-color: lightblue;
+
+    >.user-data {
+      min-width: 150px;
+    }
+
+    >.search {
+      padding: 0 1em;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      >input {
+        width: 100%;
+      }
+    }
+
+    >.title {
+      font-size: 1.5em;
+      font-weight: bold;
+      min-width: 150px;
+    }
+  }
+
+  >.body {
+    height: 100%;
+    width: 100%;
+    overflow: scroll;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+
+    >.search-description {
+      &::before {
+        content: 'You searched for:';
+        padding-right: .5em;
+        font-size: small;
+        font-style: italic;
+
+      }
+
+      width: 100%;
+      padding: 1em;
+      box-sizing: border-box;
+
+      &::after {
+        content: 'results found👇';
+        padding-left: .5em;
+        font-style: italic;
+        font-size: small;
+      }
+    }
+
+    >.pagination {
+      >input {
+        min-width: 3em;
+      }
+    }
+
+    >.loading {
+      position: absolute;
+      top: 20%;
+      left: 50%;
+      transform: translate3d(-50%, -50%, 0);
+      box-sizing: border-box;
+      background-color: peachpuff;
+      padding: 1em;
+      font-size: large;
+    }
+
+    >.movies {
+      --n: 5;
+      --width: 100vw
+        /* screen width */
+        - 15px; // scrollbar
+      --padding: 1em;
+      --ratio: .7;
+
+      padding: var(--padding);
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: var(--padding);
+
+
+
+
+
+      @media screen and (max-width: 800px) {
+        --n: 2;
+      }
+
+      @media screen and (max-width: 500px) {
+        --n: 1;
+      }
+
+      @media screen and (min-width: 800px) {
+        --ratio: .8;
+      }
+
+
+
+      >.movie {
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+
+        --img-height: calc((var(--width) - 2*var(--padding)) / (var(--n)*var(--ratio)));
+        --img-width: calc((var(--width) - 2*var(--padding) - var(--padding) * (var(--n) - 1)) / var(--n));
+
+        >img {
+          height: var(--img-height);
+          width: var(--img-width);
+        }
+
+        >.description {
+          --padding: .5em;
+          padding: var(--padding);
+          max-width: calc(var(--img-width) - 2*var(--padding));
+          display: flex;
+          flex-direction: column;
+          line-height: 1em;
+
+          gap: var(--padding);
+
+          >*::before {
+            padding-right: var(--padding);
+            font-style: italic;
+          }
+
+          >.title::before {
+            content: 'name:';
+          }
+
+          >.year::before {
+            content: 'year:';
+          }
+
+          >.imdbID::before {
+            content: 'imdbID:';
+          }
+
+          >.type::before {
+            content: 'Type:';
+          }
+        }
+      }
+    }
+  }
+}

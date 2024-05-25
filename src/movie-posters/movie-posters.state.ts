@@ -6,6 +6,7 @@ export interface IMoviePostersState {
   currentPage: number;
   isLoading: boolean;
   data: Array<Movie>;
+  totalResults: number;
 }
 
 export class MoviePostersState extends EventTarget implements IMoviePostersState {
@@ -16,6 +17,7 @@ export class MoviePostersState extends EventTarget implements IMoviePostersState
   query: string = '';
   pagesCount: number = 0;
   currentPage: number = 0;
+  totalResults: number = 0;
   isLoading: boolean = false;
   data: Array<Movie> = [];
 
@@ -40,3 +42,6 @@ export class MoviePostersState extends EventTarget implements IMoviePostersState
     })
   }
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(window as any).state = MoviePostersState.instance;
