@@ -25,7 +25,6 @@ export class MoviePostersStateManager {
     const {detail: changeSet} = event as CustomEvent<IMoviePostersState>;
     const keys = Object.keys(changeSet);
     if (keys.includes('query')) {
-      console.log('debouncing')
       await this.fetchPostersForNewQueryDebounced(changeSet);
     } else if (keys.includes('currentPage')) {
       this.state.watchable.isLoading = true;

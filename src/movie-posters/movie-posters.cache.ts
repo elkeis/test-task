@@ -13,8 +13,11 @@ export type SearchIndex = {
 }
 
 export class MoviePostersCache {
+
   private data: WeakMap<SearchIndex, Pagination> = new WeakMap();
   private keys: Array<SearchIndex> = [];
+
+  constructor(private maxSize: number = 10) {}
 
   findKey(query: string, pageNumber: number = 0) {
     return this.keys.find(k => {
@@ -26,6 +29,9 @@ export class MoviePostersCache {
     return this.findKey(query, pageNumber) || (() => {
       const key = {query, page: pageNumber};
       this.keys.push(key);
+      if (this.keys.length > this.maxSize) {
+        this.keys.shift();
+      }
       return key;
     })();
   }
